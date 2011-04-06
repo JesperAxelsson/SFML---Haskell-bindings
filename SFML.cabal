@@ -22,7 +22,7 @@ Flag hacking
 
 Library
   -- Modules exported by the library.
-  Exposed-modules:     SFML.System.Internal, SFML.Window.Internal
+  Exposed-modules:     SFML.System.Internal, SFML.Window.Internal, SFML.Graphics.Internal
   
   -- Packages needed in order to build this package.
   Build-depends:       base == 4.3.1.*
@@ -31,13 +31,13 @@ Library
   -- Modules not exported by this package.
   Other-modules:       SFML.ForeignUtils
 
-  C-sources:           cbits/VideoModeWrapper.c, cbits/WindowWrapper.c
+  C-sources:           cbits/VideoModeWrapper.c, cbits/WindowWrapper.c, cbits/ColorWrapper.c
 
   Include-dirs:        cbits
 
-  Includes:            VideoModeWrapper.c, WindowWrapper.c
+  Includes:            VideoModeWrapper.c, WindowWrapper.c, ColorWrapper.c
 
-  Extra-libraries:     csfml-window, csfml-system
+  Extra-libraries:     csfml-graphics, csfml-window, csfml-system
   
   -- Extra tools (e.g. alex, hsc2hs, ...) needed to build the source.
   Build-tools:         c2hs
