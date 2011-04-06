@@ -16,7 +16,7 @@ import Foreign.Marshal.Alloc
 import Foreign.Marshal.Array
 import Foreign.Storable
 import Data.Word
-import Data.Bits (Bits, (.&.))
+import Data.Bits (Bits, (.|.))
 import Data.List (foldl')
 import Data.Char (chr, ord)
 import Data.ByteString (ByteString)
@@ -243,7 +243,7 @@ instance Storable VideoMode where
     {#set VideoMode->BitsPerPixel#} ptr (fromIntegral bpp)
 
 {#fun VideoMode_GetDesktopModeWrapper as videoModeGetDesktopMode
- {} -> `VideoMode' peekFree* #}
+ {alloca- `VideoModePtr'} -> `VideoMode' peekFree* #}
 
 {#fun VideoMode_IsValidWrapper as videoModeIsValid
  {withT* `VideoMode'} -> `Bool' #}
@@ -271,7 +271,7 @@ typedef enum
 {#enum Style {} with prefix = "" deriving (Eq, Show) #}
 
 stylesToCULong :: [Style] -> CULong
-stylesToCULong styles = foldl' ((. fromIntegral . fromEnum) . (.&.)) 0 styles
+stylesToCULong styles = foldl' ((. fromIntegral . fromEnum) . (.|.)) 0 styles
 
 data ContextSettings = ContextSettings {
     contextSettingDepthBits
@@ -302,7 +302,7 @@ instance Storable ContextSettings where
 
 {#pointer *Window foreign newtype #}
 
-foreign import ccall unsafe "&sfWindow_Destory"
+foreign import ccall unsafe "&sfWindow_Destroy"
   windowDestroy :: FinalizerPtr Window
 
 mkWindow :: Ptr Window -> IO Window
