@@ -14,11 +14,9 @@ CSFML_API sfWindow *sfWindow_CreateWrapperSimple(sfVideoMode *mode, const char *
   return sfWindow_Create(*mode, title, style, NULL);
 }
 
-CSFML_API sfContextSettings *sfWindow_GetSettingsWrapper(sfWindow *window)
+CSFML_API void sfWindow_GetSettingsWrapper(sfWindow *window, sfContextSettings *settings)
 {
-  sfContextSettings *settings = malloc(sizeof(sfContextSettings));
   *settings = sfWindow_GetSettings(window);
-  return settings;
 }
 
 #endif // SFML_WINDOW_WRAPPER

@@ -4,10 +4,9 @@
 #include <SFML/Config.h>
 #include <SFML/Window/VideoMode.h>
 
-CSFML_API sfVideoMode *sfVideoMode_GetDesktopModeWrapper(sfVideoMode *ptr)
+CSFML_API void sfVideoMode_GetDesktopModeWrapper(sfVideoMode *ptr)
 {
   *ptr = sfVideoMode_GetDesktopMode();
-  return ptr;
 }
 
 CSFML_API sfBool sfVideoMode_IsValidWrapper(sfVideoMode *mode)

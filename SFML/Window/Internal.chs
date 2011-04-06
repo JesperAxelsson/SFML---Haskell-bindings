@@ -243,7 +243,7 @@ instance Storable VideoMode where
     {#set VideoMode->BitsPerPixel#} ptr (fromIntegral bpp)
 
 {#fun VideoMode_GetDesktopModeWrapper as videoModeGetDesktopMode
- {alloca- `VideoModePtr'} -> `VideoMode' peekFree* #}
+ {alloca- `VideoMode' peek*} -> `()' #}
 
 {#fun VideoMode_IsValidWrapper as videoModeIsValid
  {withT* `VideoMode'} -> `Bool' #}
@@ -334,7 +334,7 @@ mkWindow win = do
  {withWindow* `Window'} -> `Word' fromIntegral #}
 
 {#fun unsafe Window_GetSettingsWrapper as windowGetSettings
- {withWindow* `Window'} -> `ContextSettings' peekFree* #}
+ {withWindow* `Window', alloca- `ContextSettings' peek*} -> `()' #}
 
 windowGetEvent :: Window -> IO (Maybe Event)
 windowGetEvent window =

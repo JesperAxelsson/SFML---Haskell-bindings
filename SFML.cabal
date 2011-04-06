@@ -1,0 +1,46 @@
+Name:                SFML
+Version:             0.0.0.1
+Synopsis:            Haskell bindings to the SFML library
+Homepage:            https://github.com/Berengal/SFML---Haskell-bindings
+License:             BSD3
+License-file:        LICENSE
+Author:              Sjur Gjøstein Karevoll
+Maintainer:          sjurberengal@gmail.com
+Category:            Game
+
+Build-type:          Simple
+
+Extra-source-files:  SFML/Window/*.c
+
+-- Constraint on the version of Cabal needed to build this package.
+Cabal-version:       >=1.8
+
+
+Library
+  -- Modules exported by the library.
+  Exposed-modules:     SFML.System.Internal, SFML.Window.Internal
+  
+  -- Packages needed in order to build this package.
+  Build-depends:       base == 4.3.1.*
+                     , bytestring == 0.9.1.*
+  
+  -- Modules not exported by this package.
+  Other-modules:       SFML.ForeignUtils
+
+  C-sources:           cbits/VideoModeWrapper.c, cbits/WindowWrapper.c
+
+  Include-dirs:        cbits
+
+  Includes:            VideoModeWrapper.c, WindowWrapper.c
+
+  Extra-libraries:     csfml-window, csfml-system
+  
+  -- Extra tools (e.g. alex, hsc2hs, ...) needed to build the source.
+  Build-tools:         c2hs
+
+Executable test-sfml
+  Main-is:             Test.hs
+
+  Build-depends:       SFML == 0.0.0.1
+                     , base == 4.3.1.*
+
