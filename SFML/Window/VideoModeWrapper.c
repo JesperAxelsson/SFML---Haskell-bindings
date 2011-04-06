@@ -4,15 +4,6 @@
 #include <SFML/Config.h>
 #include <SFML/Window/VideoMode.h>
 
-CSFML_API sfVideoMode *sfVideoMode_CreateWrapper(unsigned int Width, unsigned int Height, unsigned int BitsPerPixel)
-{
-  sfVideoMode *mode = malloc(sizeof(sfVideoMode));
-  mode->Width = Width;
-  mode->Height = Height;
-  mode->BitsPerPixel = BitsPerPixel;
-  return mode;
-}
-
 CSFML_API sfVideoMode *sfVideoMode_GetDesktopModeWrapper(void)
 {
   sfVideoMode *ptr = malloc(sizeof(sfVideoMode));
