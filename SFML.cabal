@@ -15,6 +15,10 @@ Extra-source-files:  SFML/Window/*.c
 -- Constraint on the version of Cabal needed to build this package.
 Cabal-version:       >=1.8
 
+Flag hacking
+  Default: False
+  Description:
+    Use this when you want to build an executable (hacking-sfml, Hacking.hs) containing whatever code
 
 Library
   -- Modules exported by the library.
@@ -38,8 +42,14 @@ Library
   -- Extra tools (e.g. alex, hsc2hs, ...) needed to build the source.
   Build-tools:         c2hs
 
-Executable test-sfml
-  Main-is:             Test.hs
+Executable hacking-sfml
+  if flag(hacking)
+    Buildable:         True
+  else
+    Buildable:         False
+
+
+  Main-is:             Hacking.hs
 
   Build-depends:       SFML == 0.0.0.1
                      , base == 4.3.1.*
