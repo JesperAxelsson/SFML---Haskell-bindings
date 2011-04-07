@@ -9,8 +9,10 @@ module SFML.Graphics.Internal where
 #include "ColorWrapper.c"
 #include "GlyphWrapper.c"
 #include "FontWrapper.c"
-#include "ImageWrapper.c"
+#include "SpriteWrapper.c"
 #include "RenderWindowWrapper.c"
+#include "ImageWrapper.c"
+
 
 import Foreign
 import Foreign.C
@@ -26,11 +28,26 @@ import Data.ByteString (ByteString, packCStringLen)
 {#context lib="csfml-graphics" prefix="sf" #}
 
 
+{------------------------------------  Types  ------------------------------------}
+
+{#pointer *Font foreign newtype #}
+{#pointer *Image foreign newtype #}
+{#pointer *Shader foreign newtype #}
+{#pointer *RenderImage foreign newtype #}
+{#pointer *RenderWindow foreign newtype #}
+{#pointer *Shape foreign newtype #}
+{#pointer *Sprite foreign newtype #}
+{#pointer *Text foreign newtype #}
+{#pointer *View foreign newtype #}
+
+{#pointer *Color as ColorPtr -> Color #}
+{#pointer *Glyph as GlyphPtr -> Glyph #}
+
+{#enum BlendMode {} deriving (Eq, Show) #}
+
 {------------------------------------  Color  ------------------------------------}
 
 data Color = Color { red, green, blue, alpha :: Word8 } deriving (Eq, Show)
-
-{#pointer *Color as ColorPtr -> Color #}
 
 instance Storable Color where
   sizeOf _ = {#sizeof Color #}
@@ -150,8 +167,6 @@ data Glyph = Glyph { glyphAdvance :: Int
                    , glyphBounds, glyphSubRect :: Rect Int
                    } deriving (Eq, Show)
 
-{#pointer *Glyph as GlyphPtr -> Glyph #}
-
 instance Storable Glyph where
   sizeOf _ = {#sizeof Glyph #}
   alignment _ = {#alignof Glyph #}
@@ -170,8 +185,6 @@ instance Storable Glyph where
                      {#call unsafe Glyph_SetBounds #} ptr (castPtr boundsPtr))
     withT subRect $ (\subRectPtr ->
                       {#call unsafe Glyph_SetSubRect #} ptr (castPtr subRectPtr))
-
-{#pointer *Font foreign newtype #}
 
 foreign import ccall unsafe "&sfFont_Destroy"
   fontDestroy :: FinalizerPtr Font
@@ -213,24 +226,159 @@ toCodepoint = fromIntegral.ord
 
 {------------------------------------  Sprite  ------------------------------------}
 
-{#pointer *Sprite foreign newtype #}
 
-{------------------------------------  Shape  ------------------------------------}
+foreign import ccall unsafe "&sfSprite_Destroy"
+  spriteDestroy :: FinalizerPtr Sprite
 
-{#pointer *Shape foreign newtype #}
+mkSprite :: Ptr Sprite -> IO Sprite
+mkSprite ptr = fmap Sprite $ newForeignPtr spriteDestroy ptr
 
-{-------------------------------------  Text  --------------------------------------}
+mkConstSprite :: Ptr Sprite -> IO Sprite
+mkConstSprite ptr = fmap Sprite $ newForeignPtr_ ptr
 
-{#pointer *Text foreign newtype #}
+{#fun unsafe Sprite_Copy as ^
+ {withSprite* `Sprite'} -> `Sprite' mkSprite* #}
 
-{------------------------------------  Shader  ------------------------------------}
+{#fun unsafe Sprite_SetX as ^
+ {withSprite* `Sprite'
+ ,`Float'} -> `()' #}
 
-{#pointer *Shader foreign newtype #}
+{#fun unsafe Sprite_SetY as ^
+ {withSprite* `Sprite'
+ ,`Float'} -> `()' #}
 
+{#fun unsafe Sprite_SetPosition as ^
+ {withSprite* `Sprite'
+ ,`Float'
+ ,`Float'} -> `()' #}
 
+{#fun unsafe Sprite_SetScaleX as ^
+ {withSprite* `Sprite'
+ ,`Float'} -> `()' #}
+
+{#fun unsafe Sprite_SetScaleY as ^
+ {withSprite* `Sprite'
+ ,`Float'} -> `()' #}
+
+{#fun unsafe Sprite_SetScale as ^
+ {withSprite* `Sprite'
+ ,`Float'
+ ,`Float'} -> `()' #}
+
+{#fun unsafe Sprite_SetRotation as ^
+ {withSprite* `Sprite'
+ ,`Float'} -> `()' #}
+
+{#fun unsafe Sprite_SetOrigin as ^
+ {withSprite* `Sprite'
+ ,`Float'
+ ,`Float'} -> `()' #}
+
+{#fun unsafe Sprite_SetColorWrapper as spriteSetColor
+ {withSprite* `Sprite'
+ ,withT* `Color'} -> `()' #}
+
+{#fun unsafe Sprite_SetBlendMode as ^
+ {withSprite* `Sprite'
+ ,cFromEnum `BlendMode'} -> `()' #}
+
+{#fun unsafe Sprite_GetX as ^
+ {withSprite* `Sprite'} -> `Float' #}
+
+{#fun unsafe Sprite_GetY as ^
+ {withSprite* `Sprite'} -> `Float' #}
+
+{#fun unsafe Sprite_GetScaleX as ^
+ {withSprite* `Sprite'} -> `Float' #}
+
+{#fun unsafe Sprite_GetScaleY as ^
+ {withSprite* `Sprite'} -> `Float' #}
+
+{#fun unsafe Sprite_GetRotation as ^
+ {withSprite* `Sprite'} -> `Float' #}
+
+{#fun unsafe Sprite_GetOriginX as ^
+ {withSprite* `Sprite'} -> `Float' #}
+
+{#fun unsafe Sprite_GetOriginY as ^
+ {withSprite* `Sprite'} -> `Float' #}
+
+{#fun unsafe Sprite_GetColorWrapper as spriteGetColor
+ {withSprite* `Sprite'
+ ,alloca- `Color' peek*} -> `()' #}
+
+{#fun unsafe Sprite_GetBlendMode as ^
+ {withSprite* `Sprite'} -> `BlendMode' cToEnum #}
+
+{#fun unsafe Sprite_Move as ^
+ {withSprite* `Sprite'
+ ,`Float'
+ ,`Float'} -> `()' #}
+
+{#fun unsafe Sprite_Scale as ^
+ {withSprite* `Sprite'
+ ,`Float'
+ ,`Float'} -> `()' #}
+
+{#fun unsafe Sprite_Rotate as ^
+ {withSprite* `Sprite'
+ ,`Float'} -> `()' #}
+
+{#fun unsafe Sprite_TransformToLocal as ^
+ {withSprite* `Sprite'
+ ,`Float'
+ ,`Float'
+ ,allocaFloat- `Float' peekFloat*
+ ,allocaFloat- `Float' peekFloat*} -> `()' #}
+
+{#fun unsafe Sprite_TransformToGlobal as ^
+ {withSprite* `Sprite'
+ ,`Float'
+ ,`Float'
+ ,allocaFloat- `Float' peekFloat*
+ ,allocaFloat- `Float' peekFloat*} -> `()' #}
+
+{#fun unsafe Sprite_SetImage as ^
+ {withSprite* `Sprite'
+ ,withImage* `Image'
+ ,`Bool'} -> `()' #}
+
+{#fun unsafe Sprite_SetSubRectWrapper as spriteSetSubRect
+ {withSprite* `Sprite'
+ ,castWithT* `Rect Int'} -> `()' #}
+
+{#fun unsafe Sprite_Resize as ^
+ {withSprite* `Sprite'
+ ,`Float'
+ ,`Float'} -> `()' #}
+
+{#fun unsafe Sprite_FlipX as ^
+ {withSprite* `Sprite'
+ ,`Bool'} -> `()' #}
+
+{#fun unsafe Sprite_FlipY as ^
+ {withSprite* `Sprite'
+ ,`Bool'} -> `()' #}
+
+{#fun unsafe Sprite_GetImage as ^
+ {withSprite* `Sprite'} -> `Image' mkConstImage* #}
+
+{#fun unsafe Sprite_GetSubRectWrapper as spriteGetSubRect
+ {withSprite* `Sprite'
+ ,allocaIntRect- `Rect Int' peekRect*} -> `()' #}
+
+{#fun unsafe Sprite_GetWidth as ^
+ {withSprite* `Sprite'} -> `Float' #}
+
+{#fun unsafe Sprite_GetHeight as ^
+ {withSprite* `Sprite'} -> `Float' #}
+
+{#fun unsafe Sprite_GetPixelWrapper as spriteGetPixel
+ {withSprite* `Sprite'
+ ,fromIntegral `Word'
+ ,fromIntegral `Word'
+ ,alloca- `Color' peek*} -> `()' #}
 {-------------------------------------  View  --------------------------------------}
-
-{#pointer *View foreign newtype #}
 
 foreign import ccall unsafe "&sfView_Destroy"
   viewDestroy :: FinalizerPtr View
@@ -242,8 +390,6 @@ mkConstView :: Ptr View -> IO View
 mkConstView ptr = fmap View $ newForeignPtr_ ptr
 
 {---------------------------------  RenderWindow  ----------------------------------}
-
-{#pointer *RenderWindow foreign newtype #}
 
 foreign import ccall unsafe "&sfRenderWindow_Destroy"
   renderWindowDestroy :: FinalizerPtr RenderWindow
@@ -422,22 +568,16 @@ instance Drawable Text where
  ,withView* `View'
  ,allocaIntRect- `Rect Int' peekRect*} -> `()' #}
 
-{#fun unsafe RenderWindow_ConvertCoords as renderWindowConvertCoords_
+{#fun unsafe RenderWindow_ConvertCoords as ^
  {withRenderWindow* `RenderWindow'
  ,fromIntegral `Word'
  ,fromIntegral `Word'
- ,alloca- `CFloat' peek*
- ,alloca- `CFloat' peek*
+ ,allocaFloat- `Float' peekFloat*
+ ,allocaFloat- `Float' peekFloat*
  ,withView* `View'} -> `()'#}
-
-renderWindowConvertCoords :: RenderWindow -> Word -> Word -> View -> IO (Float, Float)
-renderWindowConvertCoords win x y view = do
-  (vx, vy) <- renderWindowConvertCoords_ win x y view
-  return (realToFrac vx, realToFrac vy)
 
 {------------------------------------  Image  ------------------------------------}
 
-{#pointer *Image foreign newtype #}
 
 {#fun unsafe Font_GetImage as ^
  {withFont* `Font'
@@ -448,6 +588,9 @@ foreign import ccall unsafe "&sfImage_Destroy"
 
 mkImage :: Ptr Image -> IO Image
 mkImage ptr = fmap Image $ newForeignPtr imageDestroy ptr
+
+mkConstImage :: Ptr Image -> IO Image
+mkConstImage ptr = fmap Image $ newForeignPtr_ ptr
 
 {#fun unsafe Image_CreateFromColorWrapper as imageCreateFromColor
  {fromIntegral `Word'

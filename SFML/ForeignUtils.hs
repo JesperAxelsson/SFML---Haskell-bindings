@@ -35,3 +35,7 @@ withByteStringLen bytes m =
   in withForeignPtr bytesFPtr $ \bytesPtr ->
       m (castPtr (plusPtr bytesPtr offset), fromIntegral len)
 
+allocaFloat = alloca . (.(castPtr :: Ptr Float -> Ptr CFloat))
+
+peekFloat :: Ptr CFloat -> IO Float
+peekFloat ptr = peek ptr >>= return.realToFrac
