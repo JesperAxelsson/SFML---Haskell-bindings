@@ -22,8 +22,24 @@ Flag hacking
 
 Library
   -- Modules exported by the library.
-  Exposed-modules:     SFML.System.Internal, SFML.Window.Internal, SFML.Graphics.Internal
-  
+  Exposed-modules:     SFML.System.Internal
+                     , SFML.Window.Internal.Types
+                     , SFML.Window.Internal.Context
+                     , SFML.Window.Internal.Event
+                     , SFML.Window.Internal.Input
+                     , SFML.Window.Internal.VideoMode
+                     , SFML.Window.Internal.Window
+                     , SFML.Graphics.Internal.Types
+                     , SFML.Graphics.Internal.View
+                     , SFML.Graphics.Internal.Rect
+                     , SFML.Graphics.Internal.Glyph
+                     , SFML.Graphics.Internal.Color
+                     , SFML.Graphics.Internal.Image
+                     , SFML.Graphics.Internal.Sprite
+                     , SFML.Graphics.Internal.Font
+                     , SFML.Graphics.Internal.RenderWindow
+                     , SFML.Graphics.Internal.RenderImage
+
   -- Packages needed in order to build this package.
   Build-depends:       base == 4.3.1.*
                      , bytestring == 0.9.1.*
