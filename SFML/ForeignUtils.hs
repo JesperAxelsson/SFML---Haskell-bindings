@@ -8,6 +8,9 @@ import qualified Data.ByteString.Internal as BSI
 withT :: Storable a => a -> (Ptr a -> IO b) -> IO b
 withT = with
 
+castWithT :: Storable a => a -> (Ptr b -> IO c) -> IO c
+castWithT x a = with x (a.castPtr)
+
 peekFree :: Storable a => Ptr a -> IO a
 peekFree ptr = do
   x <- peek ptr
@@ -26,3 +29,9 @@ withByteString bytes m =
   in withForeignPtr bytesFPtr $ \bytesPtr ->
       m (plusPtr (castPtr bytesPtr) offset)
     
+withByteStringLen :: ByteString -> ((Ptr (), CULong) -> IO a) -> IO a
+withByteStringLen bytes m =
+  let (bytesFPtr, offset, len) = BSI.toForeignPtr bytes
+  in withForeignPtr bytesFPtr $ \bytesPtr ->
+      m (castPtr (plusPtr bytesPtr offset), fromIntegral len)
+

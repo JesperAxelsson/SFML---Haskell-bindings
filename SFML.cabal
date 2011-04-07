@@ -10,7 +10,7 @@ Category:            Game
 
 Build-type:          Simple
 
-Extra-source-files:  SFML/Window/*.c
+Extra-source-files:  cbits/*.c
 
 -- Constraint on the version of Cabal needed to build this package.
 Cabal-version:       >=1.8
@@ -31,11 +31,11 @@ Library
   -- Modules not exported by this package.
   Other-modules:       SFML.ForeignUtils
 
-  C-sources:           cbits/VideoModeWrapper.c, cbits/WindowWrapper.c, cbits/ColorWrapper.c
+  C-sources:           cbits/VideoModeWrapper.c, cbits/WindowWrapper.c, cbits/ColorWrapper.c, cbits/FontWrapper.c
 
   Include-dirs:        cbits
 
-  Includes:            VideoModeWrapper.c, WindowWrapper.c, ColorWrapper.c
+  Includes:            VideoModeWrapper.c, WindowWrapper.c, ColorWrapper.c, FontWrapper.c
 
   Extra-libraries:     csfml-graphics, csfml-window, csfml-system
   
