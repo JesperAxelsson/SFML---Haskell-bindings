@@ -20,9 +20,16 @@ Flag hacking
   Description:
     Use this when you want to build an executable (hacking-sfml, Hacking.hs) containing whatever code
 
+Flag dev
+  Default: False
+  Description:
+    Use this to build when developing (enables more warnings)
+
 Library
   -- Modules exported by the library.
-  Exposed-modules:     SFML.System.Internal
+  Exposed-modules:     SFML.System.Internal.Types
+                     , SFML.System.Internal.Clock
+                     , SFML.System.Internal.Randomizer
                      , SFML.Window.Internal.Types
                      , SFML.Window.Internal.Context
                      , SFML.Window.Internal.Event
@@ -39,6 +46,9 @@ Library
                      , SFML.Graphics.Internal.Font
                      , SFML.Graphics.Internal.RenderWindow
                      , SFML.Graphics.Internal.RenderImage
+
+  if flag(dev)
+    Ghc-options: -Wall
 
   -- Packages needed in order to build this package.
   Build-depends:       base == 4.3.1.*

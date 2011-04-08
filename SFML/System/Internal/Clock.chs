@@ -1,18 +1,15 @@
 {-# LANGUAGE ForeignFunctionInterface #-}
-{-# LANGUAGE TypeSynonymInstances #-}
 
-module SFML.System.Internal where
+module SFML.System.Internal.Clock where
 
-#include <SFML/System.h>
+#include <SFML/System/Clock.h>
 
+{#import SFML.System.Internal.Types #}
 import Foreign.Ptr
 import Foreign.ForeignPtr
 import Foreign.C
-import Data.Word
 
 {#context lib="csfml-system" prefix="sf" #}
-
-{#pointer *Clock foreign newtype #}
 
 foreign import ccall unsafe "&sfClock_Destroy"
   clockDestroy :: FinalizerPtr Clock
@@ -33,16 +30,3 @@ mkClock c = do
 
 {#fun unsafe Clock_Reset as ^
  {withClock* `Clock'} -> `()' #}
-
-{#fun unsafe Random_SetSeed as ^
- {fromIntegral `Word'} -> `()' #}
-
-{#fun unsafe Random_GetSeed as ^
- {} -> `Word' fromIntegral #}
-
-{#fun unsafe Random_Float as ^
- {`Float', `Float'} -> `Float' #}
-
-{#fun unsafe Random_Int as ^
- {`Int', `Int'} -> `Int' #}
-
