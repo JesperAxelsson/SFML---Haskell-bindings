@@ -36,7 +36,7 @@ mkRenderWindow ptr = fmap RenderWindow $ newForeignPtr renderWindowDestroy ptr
  {withT* `VideoMode'
  ,`String'
  ,stylesToCULong `[Style]'
- ,withT* `ContextSettings'} -> `RenderWindow' mkRenderWindow* #}
+ ,'withMaybe withT'* `Maybe ContextSettings'} -> `RenderWindow' mkRenderWindow* #}
 
 {#fun unsafe RenderWindow_CreateFromHandle as ^
  {id `WindowHandle'
@@ -191,10 +191,15 @@ renderWindowWaitEvent window =
  ,withView* `View'
  ,allocaIntRect- `Rect Int' peekRect*} -> `()' #}
 
-{#fun unsafe RenderWindow_ConvertCoords as ^
+{#fun unsafe RenderWindow_ConvertCoords as renderWindowConvertCoords_
  {withRenderWindow* `RenderWindow'
  ,fromIntegral `Word'
  ,fromIntegral `Word'
- ,allocaFloat- `Float' peekFloat*
- ,allocaFloat- `Float' peekFloat*
- ,withView* `View'} -> `()'#}
+ ,alloca- `CFloat' peek*
+ ,alloca- `CFloat' peek*
+ ,'withMaybe withView'* `Maybe View'} -> `()'#}
+
+renderWindowConvertCoords :: RenderWindow -> Word -> Word -> Maybe View -> IO (Float, Float)
+renderWindowConvertCoords window x y view = do
+  (x', y') <- renderWindowConvertCoords_ window x y view
+  return (realToFrac x', realToFrac y')

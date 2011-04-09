@@ -9,6 +9,7 @@ module SFML.Graphics.Internal.RenderImage where
 {#import SFML.Graphics.Internal.Rect #}
 {#import SFML.Graphics.Internal.View #}
 {#import SFML.Graphics.Internal.Color #}
+{#import SFML.Graphics.Internal.Image #}
 import SFML.ForeignUtils
 import Foreign.C
 import Foreign.Storable
@@ -98,11 +99,21 @@ mkRenderImage ptr = fmap RenderImage $ newForeignPtr renderImageDestroy ptr
  ,withView* `View'
  ,allocaIntRect- `Rect Int' peekRect*} -> `()' #}
 
-{#fun unsafe RenderImage_ConvertCoords as ^
+{#fun unsafe RenderImage_ConvertCoords as renderImageConvertCoords_
  {withRenderImage* `RenderImage'
  ,fromIntegral `Word'
  ,fromIntegral `Word'
- ,allocaFloat- `Float' peekFloat*
- ,allocaFloat- `Float' peekFloat*
+ ,alloca- `CFloat' peek*
+ ,alloca- `CFloat' peek*
  ,withView* `View'} -> `()'#}
 
+renderImageConvertCoords :: RenderImage -> Word -> Word -> View -> IO (Float, Float)
+renderImageConvertCoords image x y view = do
+  (x', y') <- renderImageConvertCoords_ image x y view
+  return (realToFrac x', realToFrac y')
+
+{#fun unsafe RenderImage_GetImage as ^
+ {withRenderImage* `RenderImage'} -> `Image' mkConstImage* #}
+
+{#fun pure unsafe RenderImage_IsAvailable as ^
+ {} -> `Bool' toBool #}

@@ -116,19 +116,29 @@ mkConstSprite ptr = fmap Sprite $ newForeignPtr_ ptr
  {withSprite* `Sprite'
  ,`Float'} -> `()' #}
 
-{#fun unsafe Sprite_TransformToLocal as ^
+{#fun unsafe Sprite_TransformToLocal as spriteTransformToLocal_
  {withSprite* `Sprite'
  ,`Float'
  ,`Float'
- ,allocaFloat- `Float' peekFloat*
- ,allocaFloat- `Float' peekFloat*} -> `()' #}
+ ,alloca- `CFloat' peek*
+ ,alloca- `CFloat' peek*} -> `()' #}
 
-{#fun unsafe Sprite_TransformToGlobal as ^
+spriteTransformToLocal :: Sprite -> Float -> Float -> IO (Float, Float)
+spriteTransformToLocal sprite x y = do
+  (x', y') <- spriteTransformToLocal_ sprite x y
+  return (realToFrac x', realToFrac y')
+
+{#fun unsafe Sprite_TransformToGlobal as spriteTransformToGlobal_
  {withSprite* `Sprite'
  ,`Float'
  ,`Float'
- ,allocaFloat- `Float' peekFloat*
- ,allocaFloat- `Float' peekFloat*} -> `()' #}
+ ,alloca- `CFloat' peek*
+ ,alloca- `CFloat' peek*} -> `()' #}
+
+spriteTransformToGlobal :: Sprite -> Float -> Float -> IO (Float, Float)
+spriteTransformToGlobal sprite x y = do
+  (x', y') <- spriteTransformToGlobal_ sprite x y
+  return (realToFrac x', realToFrac y')
 
 {#fun unsafe Sprite_SetImage as ^
  {withSprite* `Sprite'
