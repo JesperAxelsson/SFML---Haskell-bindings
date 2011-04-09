@@ -11,19 +11,13 @@ withT = with
 castWithT :: Storable a => a -> (Ptr b -> IO c) -> IO c
 castWithT x a = with x (a.castPtr)
 
-peekFree :: Storable a => Ptr a -> IO a
-peekFree ptr = do
-  x <- peek ptr
-  free ptr
-  return x
-
 cToEnum :: Enum a => CInt -> a
 cToEnum e = toEnum (fromIntegral e)
 
 cFromEnum :: Enum a => a -> CInt
 cFromEnum e = fromIntegral (fromEnum e)
 
-withByteString :: ByteString -> (Ptr CUChar -> IO a) -> IO a
+withByteString :: ByteString -> (Ptr b -> IO a) -> IO a
 withByteString bytes m =
   let (bytesFPtr, offset, _len) = BSI.toForeignPtr bytes
   in withForeignPtr bytesFPtr $ \bytesPtr ->
@@ -35,7 +29,10 @@ withByteStringLen bytes m =
   in withForeignPtr bytesFPtr $ \bytesPtr ->
       m (castPtr (plusPtr bytesPtr offset), fromIntegral len)
 
-allocaFloat = alloca . (.(castPtr :: Ptr Float -> Ptr CFloat))
+withMaybe :: (a -> (Ptr a -> IO b) -> IO b) -> Maybe a -> (Ptr a -> IO b) -> IO b
+withMaybe withFoo Nothing act = act nullPtr
+withMaybe withFoo (Just x) act = withFoo x act
 
-peekFloat :: Ptr CFloat -> IO Float
-peekFloat ptr = peek ptr >>= return.realToFrac
+fromNull :: (Ptr a -> IO a) -> Ptr a -> IO (Maybe a)
+fromNull conv ptr | ptr == nullPtr = return Nothing
+                  | otherwise = fmap Just $ conv ptr

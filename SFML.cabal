@@ -37,15 +37,21 @@ Library
                      , SFML.Window.Internal.VideoMode
                      , SFML.Window.Internal.Window
                      , SFML.Graphics.Internal.Types
-                     , SFML.Graphics.Internal.View
                      , SFML.Graphics.Internal.Rect
-                     , SFML.Graphics.Internal.Glyph
                      , SFML.Graphics.Internal.Color
                      , SFML.Graphics.Internal.Image
-                     , SFML.Graphics.Internal.Sprite
+                     , SFML.Graphics.Internal.Glyph
+                     , SFML.Graphics.Internal.View
                      , SFML.Graphics.Internal.Font
                      , SFML.Graphics.Internal.RenderWindow
                      , SFML.Graphics.Internal.RenderImage
+                     , SFML.Graphics.Internal.Shader
+                     , SFML.Graphics.Internal.Shape
+                     , SFML.Graphics.Internal.Sprite
+--                     , SFML.Graphics.Internal.Text
+
+
+                     
 
   if flag(dev)
     Ghc-options: -Wall
