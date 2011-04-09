@@ -1,3 +1,6 @@
 dist
 SFML-headers
 .git
+
+syntax: glob
+**/*\#*
