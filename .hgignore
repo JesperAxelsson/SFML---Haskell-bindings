@@ -4,3 +4,4 @@ SFML-headers
 
 syntax: glob
 **/*\#*
+*\#*
