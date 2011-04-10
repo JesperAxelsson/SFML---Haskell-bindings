@@ -5,12 +5,11 @@ module SFML.Window.Internal.Types where
 #include <SFML/Window/Types.h>
 #include <SFML/Window/Window.h>
 
+import SFML.ForeignUtils
 import Foreign.C
 import Foreign.Ptr
 import Foreign.ForeignPtr
 import Data.Word
-import Data.Bits ((.|.))
-import Data.List (foldl')
 import Data.IORef
 
 {#context lib="csfml-window" prefix="sf" #}
@@ -46,8 +45,8 @@ typedef enum
 {#enum Style {} with prefix = "" deriving (Eq, Show) #}
 
 stylesToCULong :: [Style] -> CULong
-stylesToCULong [] = fromIntegral (fromEnum DefaultStyle)
-stylesToCULong styles = foldl' ((. fromIntegral . fromEnum) . (.|.)) 0 styles
+stylesToCULong [] = enumsToCULong [DefaultStyle]
+stylesToCULong styles = enumsToCULong styles
 
 {#pointer *ContextSettings as ContextSettingsPtr -> ContextSettings #}
 

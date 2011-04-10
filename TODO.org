@@ -10,12 +10,12 @@
 
 * DONE Add garbage collection for Sprite
 
-* TODO Add rest of methods to Text
+* DONE Add rest of methods to Text
 
-* TODO Check for copy constructors in garbage collected types
+* DONE Check for copy constructors in garbage collected types
 
 * TODO Add View methods
 
-* TODO Add garbage collection for RenderWindow
+* DONE Add garbage collection for RenderWindow
 
-** TODO Figure out how to handle memory management for CreateFromHandle
+** DONE Figure out how to handle memory management for CreateFromHandle

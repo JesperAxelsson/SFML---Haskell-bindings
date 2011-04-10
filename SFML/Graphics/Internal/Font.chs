@@ -9,6 +9,7 @@ module SFML.Graphics.Internal.Font where
 {#import SFML.Graphics.Internal.Glyph #}
 {#import SFML.Graphics.Internal.Image #}
 import SFML.ForeignUtils
+import Foreign (unsafePerformIO)
 import Foreign.C
 import Foreign.Storable
 import Foreign.Ptr

@@ -9,6 +9,7 @@ module SFML.Graphics.Internal.Types where
 #include <SFML/Graphics/Text.h>
 
 {#import SFML.Window.Internal.Types #}
+import SFML.ForeignUtils
 import Foreign.Ptr
 import Foreign.ForeignPtr
 import Foreign.C
@@ -58,3 +59,7 @@ withText = withTextPtr . textPtr
 {#enum BlendMode {} deriving (Eq, Show) #}
 
 {#enum TextStyle {} deriving (Eq, Show) #}
+
+textStylesToCULong :: [TextStyle] -> CULong
+textStylesToCULong [] = enumsToCULong [TextRegular]
+textStylesToCULong styles = enumsToCULong styles

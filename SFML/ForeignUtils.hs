@@ -7,6 +7,8 @@ import Data.Char
 import Data.ByteString (ByteString)
 import qualified Data.ByteString.Internal as BSI
 import Data.Word
+import Data.Bits ((.|.), (.&.))
+import Data.List (foldl')
 
 withT :: Storable a => a -> (Ptr a -> IO b) -> IO b
 withT = with
@@ -40,7 +42,6 @@ fromNull :: (Ptr a -> IO b) -> Ptr a -> IO (Maybe b)
 fromNull conv ptr | ptr == nullPtr = return Nothing
                   | otherwise = fmap Just $ conv ptr
 
-
 withUnicodeString :: String -> (Ptr CUInt -> IO a) -> IO a
 withUnicodeString str act= do
   allocaArray len $ \arr -> do
@@ -49,3 +50,20 @@ withUnicodeString str act= do
     pokeElemOff arr i (fromIntegral . ord $ char)
   act arr
  where len = length str + 1
+
+fromUnicodeString :: Ptr CUInt -> IO String
+fromUnicodeString ptr = go ptr 0
+  where
+    go ptr i = do
+      c <- fmap (chr . fromIntegral) $ peekElemOff ptr i
+      if c == '\NUL'
+        then return ""
+        else do
+        rest <- go ptr (i + 1)
+        return (c:rest)
+
+enumsToCULong :: (Enum a) => [a] -> CULong
+enumsToCULong styles = foldl' ((. fromIntegral . fromEnum) . (.|.)) 0 styles
+
+cuLongToEnums :: (Enum a) => CULong -> [a]
+cuLongToEnums x = map (toEnum . fromIntegral) . filter (/=0) . map ((x .&.) . shiftL 1) $ [0.. (bitSize x) - 1]

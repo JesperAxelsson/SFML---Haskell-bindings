@@ -9,6 +9,7 @@ module SFML.Graphics.Internal.Text where
 {#import SFML.Graphics.Internal.Types #}
 {#import SFML.Graphics.Internal.Color #}
 {#import SFML.Graphics.Internal.Font #}
+{#import SFML.Graphics.Internal.Rect #}
 import SFML.ForeignUtils
 import Foreign.C
 import Foreign.C.String
@@ -16,6 +17,7 @@ import Foreign.Ptr
 import Foreign.ForeignPtr
 import Foreign.Storable
 import Foreign.Marshal.Alloc
+import Data.Word
 import Data.IORef
 
 {#context lib="csfml-graphics" prefix="sf" #}
@@ -32,8 +34,15 @@ mkText ptr = do
 {#fun unsafe Text_Create as ^
  {} -> `Maybe Text' 'fromNull mkText'* #}
 
-{#fun unsafe Text_Copy as ^
- {withText* `Text'} -> `Text' mkText* #}
+{#fun unsafe Text_Copy as textCopy_
+ {withTextPtr* `TextPtr'} -> `Ptr TextPtr' id #}
+
+textCopy :: Text -> IO Text
+textCopy text = do
+  newTextPtr <- textCopy_ (textPtr text)
+  newText <- fmap TextPtr $ newForeignPtr textDestroy newTextPtr
+  newTextFont <- newIORef =<< readIORef (textFont text) 
+  return (Text newText newTextFont)
 
 {#fun unsafe Text_SetX as ^
  {withText* `Text'
@@ -150,3 +159,48 @@ textTransformToGlobal text x y = do
  {withText* `Text'
  ,withUnicodeString* `String'} -> `()' #}
 
+{#fun unsafe Text_SetFont as textSetFont_
+ {withTextPtr* `TextPtr'
+ ,withFont* `Font'} -> `()' #}
+
+textSetFont :: Text -> Font -> IO ()
+textSetFont text font = do
+  textSetFont_ (textPtr text) font
+  writeIORef (textFont text) (Just font)
+
+{#fun unsafe Text_SetCharacterSize as ^
+ {withText* `Text'
+ ,fromIntegral `Word'} -> `()' #}
+
+{#fun unsafe Text_SetStyle as ^
+ {withText* `Text'
+ ,textStylesToCULong `[TextStyle]'} -> `()' #}
+
+{#fun unsafe Text_GetUnicodeString as ^
+ {withText* `Text'} -> `String' fromUnicodeString* #}
+
+{#fun unsafe Text_GetString as ^
+ {withText* `Text'} -> `String' #}
+
+textGetFont (Text _ font) = readIORef font
+
+{#fun unsafe Text_GetCharacterSize as ^
+ {withText* `Text'} -> `Word' fromIntegral #}
+
+{#fun unsafe Text_GetStyle as ^
+ {withText* `Text'} -> `[TextStyle]' cuLongToEnums #}
+
+{#fun unsafe Text_GetCharacterPos as textGetCharacterPos_
+ {withText* `Text'
+ ,fromIntegral `Word'
+ ,alloca- `CFloat' peek*
+ ,alloca- `CFloat' peek*} -> `()' #}
+
+textGetCharacterPos :: Text -> Word -> IO (Float, Float)
+textGetCharacterPos text index = do
+  (x, y) <- textGetCharacterPos_ text index
+  return (realToFrac x, realToFrac y)
+
+{#fun unsafe Text_GetRectWrapper as textGetRect
+ {withText* `Text'
+ ,allocaFloatRect- `Rect Float' peekRect*} -> `()' #}

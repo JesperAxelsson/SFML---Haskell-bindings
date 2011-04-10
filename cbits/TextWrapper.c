@@ -15,4 +15,9 @@ CSFML_API void sfText_GetColorWrapper(const sfText* text, sfColor *color)
   *color = sfText_GetColor(text);
 }
 
+CSFML_API void sfText_GetRectWrapper(const sfText* text, sfFloatRect *rect)
+{
+  *rect = sfText_GetRect(text);
+}
+
 #endif // SFML_TEXT_WRAPPER

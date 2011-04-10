@@ -37,6 +37,7 @@ run window sprite = do
      withMaybe event $ \evt ->do
        case evt of
          Closed -> renderWindowClose window
+         (KeyPressed KeyEscape _ _ _) -> renderWindowClose window
          (KeyPressed KeyLeft _ _ _) -> spriteMove sprite (-5) 0
          (KeyPressed KeyRight _ _ _) -> spriteMove sprite 5 0
          (KeyPressed KeyUp _ _ _) -> spriteMove sprite 0 (-5)
