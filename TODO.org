@@ -1,0 +1,17 @@
+* DONE Properly allocate unicode string
+
+* TODO Add garbage collection for Text
+
+* TODO Add garbage collection for Font
+
+* TODO Add garbage collection for Image
+
+** TODO Add pixeldata foreignptr to record
+
+* TODO Add garbage collection for Sprite
+
+* TODO Add rest of methods to Text
+
+* TODO Check for copy constructors in garbage collected types
+
+* TODO Add View methods
