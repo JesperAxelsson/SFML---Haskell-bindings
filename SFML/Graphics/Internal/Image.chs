@@ -21,29 +21,33 @@ import Data.ByteString (ByteString, packCStringLen)
 {#context lib="csfml-graphics" prefix="sf" #}
 
 foreign import ccall unsafe "&sfImage_Destroy"
-  imageDestroy :: FinalizerPtr Image
+  imageDestroy :: FinalizerPtr ImagePtr
 
-mkImage :: Ptr Image -> IO Image
-mkImage ptr = fmap Image $ newForeignPtr imageDestroy ptr
+mkImage :: Ptr ImagePtr -> IO Image
+mkImage ptr = do
+  imagePtr <- fmap ImagePtr $ newForeignPtr imageDestroy ptr
+  return (Image imagePtr)
 
-mkConstImage :: Ptr Image -> IO Image
-mkConstImage ptr = fmap Image $ newForeignPtr_ ptr
+mkConstImage :: Ptr ImagePtr -> IO Image
+mkConstImage ptr = do
+  imagePtr <- fmap ImagePtr $ newForeignPtr_ ptr
+  return (Image imagePtr)
 
 {#fun unsafe Image_CreateFromColorWrapper as imageCreateFromColor
  {fromIntegral `Word'
  ,fromIntegral `Word'
- ,withT* `Color'} -> `Image' mkImage* #}
+ ,withT* `Color'} -> `Maybe Image' 'fromNull mkImage'* #}
 
 {#fun unsafe Image_CreateFromPixels as ^
  {fromIntegral `Word'
  ,fromIntegral `Word'
- ,withByteString* `ByteString'} -> `Image' mkImage* #}
+ ,'withByteString (undefined :: CUChar)'* `ByteString'} -> `Maybe Image' 'fromNull mkImage'* #}
 
 {#fun unsafe Image_CreateFromFile as ^
- {`String'} -> `Image' mkImage* #}
+ {`String'} -> `Maybe Image' 'fromNull mkImage'* #}
 
 {#fun unsafe Image_CreateFromMemory as ^
- {withByteStringLen* `ByteString'&} -> `Image' mkImage* #}
+ {'withByteStringLen ()'* `ByteString'&} -> `Maybe Image' 'fromNull mkImage'* #}
 
 {#fun unsafe Image_Copy as ^
  {withImage* `Image'} -> `Image' mkImage* #}
@@ -94,7 +98,7 @@ imageGetPixels img = do
   
 {#fun unsafe Image_UpdatePixelsWrapper as imageUpdatePixels
  {withImage* `Image'
- ,withByteString* `ByteString'
+ ,'withByteString (undefined :: CUChar)'* `ByteString'
  ,castWithT* `Rect Int'} -> `()' #}
 
 {#fun unsafe Image_Bind as ^

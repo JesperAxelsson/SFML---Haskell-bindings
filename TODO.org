@@ -15,3 +15,7 @@
 * TODO Check for copy constructors in garbage collected types
 
 * TODO Add View methods
+
+* TODO Add garbage collection for RenderWindow
+
+** TODO Figure out how to handle memory management for CreateFromHandle

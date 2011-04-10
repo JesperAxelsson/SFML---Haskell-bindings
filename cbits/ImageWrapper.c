@@ -32,7 +32,7 @@ CSFML_API void sfImage_SetPixelWrapper(sfImage *image, unsigned int x, unsigned 
 
 CSFML_API void sfImage_GetPixelWrapper(sfImage *image, unsigned int x, unsigned int y, sfColor *outColor)
 {
-  *outColor = sfImage_GetPixelWrapper(image, x, y);
+  *outColor = sfImage_GetPixel(image, x, y);
 }
 
 CSFML_API void sfImage_UpdatePixelsWrapper(sfImage *image, const sfUint8 *pixels, sfIntRect *rectangle)

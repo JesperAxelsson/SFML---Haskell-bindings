@@ -30,12 +30,14 @@ Library
   Exposed-modules:     SFML.System.Internal.Types
                      , SFML.System.Internal.Clock
                      , SFML.System.Internal.Randomizer
+
                      , SFML.Window.Internal.Types
                      , SFML.Window.Internal.Context
                      , SFML.Window.Internal.Event
                      , SFML.Window.Internal.Input
                      , SFML.Window.Internal.VideoMode
                      , SFML.Window.Internal.Window
+
                      , SFML.Graphics.Internal.Types
                      , SFML.Graphics.Internal.Rect
                      , SFML.Graphics.Internal.Color
@@ -43,13 +45,12 @@ Library
                      , SFML.Graphics.Internal.Glyph
                      , SFML.Graphics.Internal.View
                      , SFML.Graphics.Internal.Font
+                     , SFML.Graphics.Internal.Text
+                     , SFML.Graphics.Internal.Sprite
                      , SFML.Graphics.Internal.RenderWindow
                      , SFML.Graphics.Internal.RenderImage
                      , SFML.Graphics.Internal.Shader
                      , SFML.Graphics.Internal.Shape
-                     , SFML.Graphics.Internal.Sprite
---                     , SFML.Graphics.Internal.Text
-
 
                      
 
@@ -63,11 +64,31 @@ Library
   -- Modules not exported by this package.
   Other-modules:       SFML.ForeignUtils
 
-  C-sources:           cbits/VideoModeWrapper.c, cbits/WindowWrapper.c, cbits/ColorWrapper.c, cbits/FontWrapper.c
+  C-sources:           cbits/ColorWrapper.c
+                     , cbits/FontWrapper.c
+                     , cbits/GlyphWrapper.c
+                     , cbits/ImageWrapper.c
+                     , cbits/RenderImageWrapper.c 
+                     , cbits/RenderWindowWrapper.c 
+                     , cbits/ShapeWrapper.c 
+                     , cbits/SpriteWrapper.c
+                     , cbits/TextWrapper.c 
+                     , cbits/VideoModeWrapper.c 
+                     , cbits/WindowWrapper.c
 
   Include-dirs:        cbits
 
-  Includes:            VideoModeWrapper.c, WindowWrapper.c, ColorWrapper.c, FontWrapper.c
+  Includes:            ColorWrapper.c
+                     , FontWrapper.c
+                     , GlyphWrapper.c
+                     , ImageWrapper.c
+                     , RenderImageWrapper.c 
+                     , RenderWindowWrapper.c 
+                     , ShapeWrapper.c 
+                     , SpriteWrapper.c
+                     , TextWrapper.c 
+                     , VideoModeWrapper.c 
+                     , WindowWrapper.c
 
   Extra-libraries:     csfml-graphics, csfml-window, csfml-system
   

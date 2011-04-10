@@ -2,8 +2,11 @@ module SFML.ForeignUtils where
 
 import Foreign
 import Foreign.C
+import Control.Monad
+import Data.Char
 import Data.ByteString (ByteString)
 import qualified Data.ByteString.Internal as BSI
+import Data.Word
 
 withT :: Storable a => a -> (Ptr a -> IO b) -> IO b
 withT = with
@@ -17,14 +20,14 @@ cToEnum e = toEnum (fromIntegral e)
 cFromEnum :: Enum a => a -> CInt
 cFromEnum e = fromIntegral (fromEnum e)
 
-withByteString :: ByteString -> (Ptr b -> IO a) -> IO a
-withByteString bytes m =
+withByteString :: a -> ByteString -> (Ptr a -> IO b) -> IO b
+withByteString _ bytes m =
   let (bytesFPtr, offset, _len) = BSI.toForeignPtr bytes
   in withForeignPtr bytesFPtr $ \bytesPtr ->
       m (plusPtr (castPtr bytesPtr) offset)
-    
-withByteStringLen :: ByteString -> ((Ptr (), CULong) -> IO a) -> IO a
-withByteStringLen bytes m =
+
+withByteStringLen :: a -> ByteString -> ((Ptr a, CULong) -> IO b) -> IO b
+withByteStringLen _ bytes m =
   let (bytesFPtr, offset, len) = BSI.toForeignPtr bytes
   in withForeignPtr bytesFPtr $ \bytesPtr ->
       m (castPtr (plusPtr bytesPtr offset), fromIntegral len)
@@ -33,6 +36,16 @@ withMaybe :: (a -> (Ptr a -> IO b) -> IO b) -> Maybe a -> (Ptr a -> IO b) -> IO 
 withMaybe withFoo Nothing act = act nullPtr
 withMaybe withFoo (Just x) act = withFoo x act
 
-fromNull :: (Ptr a -> IO a) -> Ptr a -> IO (Maybe a)
+fromNull :: (Ptr a -> IO b) -> Ptr a -> IO (Maybe b)
 fromNull conv ptr | ptr == nullPtr = return Nothing
                   | otherwise = fmap Just $ conv ptr
+
+
+newUnicodeString :: String -> IO (Ptr CUInt)
+newUnicodeString str = do
+  arr <- mallocArray len
+  pokeElemOff arr (len - 1) 0
+  forM_ (zip str [0..]) $ \(char, i) -> do
+    pokeElemOff arr i (fromIntegral . ord $ char)
+  return arr
+ where len = length str + 1

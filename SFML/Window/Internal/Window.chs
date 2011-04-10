@@ -49,12 +49,7 @@ mkWindow win = do
  {withT* `VideoMode'
  ,`String'
  ,stylesToCULong `[Style]'
- ,withT* `ContextSettings'} -> `Window' mkWindow* #}
-
-{#fun unsafe Window_CreateWrapperSimple as windowCreateSimple
- {withT* `VideoMode'
- ,`String'
- ,stylesToCULong `[Style]'} -> `Window' mkWindow* #}
+ ,'withMaybe withT'* `Maybe ContextSettings'} -> `Window' mkWindow* #}
 
 {#fun unsafe Window_Close as ^
  {withWindow* `Window'} -> `()' #}
@@ -118,7 +113,7 @@ windowWaitEvent window =
  {withWindow* `Window'
  ,fromIntegral `Word'
  ,fromIntegral `Word'
- ,withByteString* `ByteString'} -> `()' #}
+ ,'withByteString (undefined :: CUChar)'* `ByteString'} -> `()' #}
 
 {#fun unsafe Window_SetActive as ^
  {withWindow* `Window'

@@ -16,20 +16,37 @@ import Foreign.ForeignPtr
 import Foreign.Marshal
 import Foreign.Marshal.Alloc
 import Data.Word
+import Data.IORef
 
 {#context lib="csfml-graphics" prefix="sf" #}
 
 foreign import ccall unsafe "&sfSprite_Destroy"
-  spriteDestroy :: FinalizerPtr Sprite
+  spriteDestroy :: FinalizerPtr SpritePtr
 
-mkSprite :: Ptr Sprite -> IO Sprite
-mkSprite ptr = fmap Sprite $ newForeignPtr spriteDestroy ptr
+mkSprite :: Ptr SpritePtr -> IO Sprite
+mkSprite ptr = do
+  spritePtr <- fmap SpritePtr $ newForeignPtr spriteDestroy ptr
+  spriteImage <- newIORef Nothing
+  return (Sprite spritePtr spriteImage)
 
-mkConstSprite :: Ptr Sprite -> IO Sprite
-mkConstSprite ptr = fmap Sprite $ newForeignPtr_ ptr
+mkConstSprite :: Ptr SpritePtr -> IO Sprite
+mkConstSprite ptr = do
+  spritePtr <- fmap SpritePtr $ newForeignPtr_ ptr
+  spriteImage <- newIORef Nothing
+  return (Sprite spritePtr spriteImage)
 
-{#fun unsafe Sprite_Copy as ^
- {withSprite* `Sprite'} -> `Sprite' mkSprite* #}
+{#fun unsafe Sprite_Create as ^
+ {} -> `Maybe Sprite' 'fromNull mkSprite'* #}
+
+{#fun unsafe Sprite_Copy as spriteCopy_
+ {withSpritePtr* `SpritePtr'} -> `Ptr SpritePtr' id #}
+
+spriteCopy :: Sprite -> IO Sprite
+spriteCopy sprite = do
+  newPtr <- spriteCopy_ (spritePtr sprite)
+  newSprite <- fmap SpritePtr $ newForeignPtr spriteDestroy newPtr
+  newSpriteImage <- newIORef =<< readIORef (spriteImage sprite)
+  return (Sprite newSprite newSpriteImage)
 
 {#fun unsafe Sprite_SetX as ^
  {withSprite* `Sprite'
@@ -140,10 +157,15 @@ spriteTransformToGlobal sprite x y = do
   (x', y') <- spriteTransformToGlobal_ sprite x y
   return (realToFrac x', realToFrac y')
 
-{#fun unsafe Sprite_SetImage as ^
- {withSprite* `Sprite'
+{#fun unsafe Sprite_SetImage as spriteSetImage_
+ {withSpritePtr* `SpritePtr'
  ,withImage* `Image'
  ,`Bool'} -> `()' #}
+
+spriteSetImage :: Sprite -> Image -> Bool -> IO ()
+spriteSetImage sprite image adjustSize = do
+  spriteSetImage_ (spritePtr sprite) image adjustSize
+  writeIORef (spriteImage sprite) (Just image)
 
 {#fun unsafe Sprite_SetSubRectWrapper as spriteSetSubRect
  {withSprite* `Sprite'

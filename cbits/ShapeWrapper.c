@@ -6,7 +6,7 @@
 
 CSFML_API sfShape* sfShape_CreateLineWrapper(float p1x, float p1y, float p2x, float p2y, float thickness, sfColor *color, float outline, sfColor *outlineColor)
 {
-  return sfShape_CreateLine(p1x, p1y, p2x, p2y, thickness, *color, outline *outlineColor);
+  return sfShape_CreateLine(p1x, p1y, p2x, p2y, thickness, *color, outline, *outlineColor);
 }
 
 CSFML_API sfShape* sfShape_CreateRectangleWrapper(float left, float top, float width, float height, sfColor *color, float outline, sfColor *outlineColor)
@@ -36,17 +36,12 @@ CSFML_API void sfShape_AddPointWrapper(sfShape* shape, float x, float y, sfColor
 
 CSFML_API void sfShape_GetPointColorWrapper(const sfShape* shape, unsigned int index, sfColor *color)
 {
-  *color = sfShape_GetPointColor(shape);
+  *color = sfShape_GetPointColor(shape, index);
 }
 
 CSFML_API void sfShape_GetPointOutlineColorWrapper(const sfShape* shape, unsigned int index, sfColor *color)
 {
-  *color = sfShape_GetPointOutlineColor(shape);
-}
-
-CSFML_API void sfShape_GetColorWrapper(const sfShape* shape, sfColor *color)
-{
-  *color = sfShape_GetColor(shape);
+  *color = sfShape_GetPointOutlineColor(shape, index);
 }
 
 CSFML_API void sfShape_SetPointColorWrapper(sfShape* shape, unsigned int index, sfColor *color)

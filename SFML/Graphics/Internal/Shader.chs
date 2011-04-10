@@ -24,10 +24,10 @@ mkShader :: Ptr Shader -> IO Shader
 mkShader ptr = fmap Shader $ newForeignPtr shaderDestroy ptr
 
 {#fun unsafe Shader_CreateFromFile as ^
- {`String'} -> `Shader' mkShader* #}
+ {`String'} -> `Maybe Shader' 'fromNull mkShader'* #}
 
 {#fun unsafe Shader_CreateFromMemory as ^
- {withByteString* `ByteString'} -> `Shader' mkShader* #}
+ {'withByteString (undefined :: CChar)'* `ByteString'} -> `Maybe Shader' 'fromNull mkShader'* #}
 
 {#fun unsafe Shader_Copy as ^
  {withShader* `Shader'} -> `Shader' mkShader* #}

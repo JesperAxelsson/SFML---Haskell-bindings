@@ -25,7 +25,7 @@ mkShape :: Ptr Shape -> IO Shape
 mkShape ptr = fmap Shape $ newForeignPtr shapeDestroy ptr
 
 {#fun unsafe Shape_Create as ^
- {} -> `Shape' mkShape* #}
+ {} -> `Maybe Shape' 'fromNull mkShape'* #}
 
 {#fun unsafe Shape_CreateLineWrapper as shapeCreateLine
  {`Float'

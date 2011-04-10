@@ -45,6 +45,7 @@ typedef enum
 {#enum Style {} with prefix = "" deriving (Eq, Show) #}
 
 stylesToCULong :: [Style] -> CULong
+stylesToCULong [] = fromIntegral (fromEnum DefaultStyle)
 stylesToCULong styles = foldl' ((. fromIntegral . fromEnum) . (.|.)) 0 styles
 
 {#pointer *ContextSettings as ContextSettingsPtr -> ContextSettings #}

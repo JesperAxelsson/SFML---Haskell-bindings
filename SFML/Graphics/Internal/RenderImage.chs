@@ -10,6 +10,8 @@ module SFML.Graphics.Internal.RenderImage where
 {#import SFML.Graphics.Internal.View #}
 {#import SFML.Graphics.Internal.Color #}
 {#import SFML.Graphics.Internal.Image #}
+{#import SFML.Graphics.Internal.Sprite #}
+{#import SFML.Graphics.Internal.Text #}
 import SFML.ForeignUtils
 import Foreign.C
 import Foreign.Storable
@@ -115,5 +117,3 @@ renderImageConvertCoords image x y view = do
 {#fun unsafe RenderImage_GetImage as ^
  {withRenderImage* `RenderImage'} -> `Image' mkConstImage* #}
 
-{#fun pure unsafe RenderImage_IsAvailable as ^
- {} -> `Bool' toBool #}
