@@ -107,6 +107,10 @@ renderWindowWaitEvent window =
  ,fromIntegral `Word'
  ,fromIntegral `Word'} -> `()' #}
 
+{#fun unsafe RenderWindow_SetTitle as ^
+ {withRenderWindow* `RenderWindow'
+ ,`String'} -> `()' #}
+
 {#fun unsafe RenderWindow_Show as ^
  {withRenderWindow* `RenderWindow'
  ,`Bool'} -> `()' #}

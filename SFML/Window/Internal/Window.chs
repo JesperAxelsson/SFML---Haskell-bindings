@@ -104,6 +104,10 @@ windowWaitEvent window =
 {#fun unsafe Window_SetSize as ^
  {withWindow* `Window', fromIntegral `Word', fromIntegral `Word'} -> `()' #}
 
+{#fun unsafe Window_SetTitle as ^
+ {withWindow* `Window'
+ ,`String'} -> `()' #}
+
 {#fun unsafe Window_Show as ^
  {withWindow* `Window', `Bool'} -> `()' #}
 
