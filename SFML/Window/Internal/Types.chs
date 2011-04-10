@@ -11,6 +11,7 @@ import Foreign.ForeignPtr
 import Data.Word
 import Data.Bits ((.|.))
 import Data.List (foldl')
+import Data.IORef
 
 {#context lib="csfml-window" prefix="sf" #}
 

@@ -26,9 +26,8 @@ foreign import ccall unsafe "&sfText_Destroy"
 mkText :: Ptr TextPtr -> IO Text
 mkText ptr = do
   textPtr <- fmap TextPtr $ newForeignPtr textDestroy ptr
-  textString <- newIORef Nothing
   textFont <- newIORef Nothing
-  return (Text textPtr textString textFont)
+  return (Text textPtr textFont)
 
 {#fun unsafe Text_Create as ^
  {} -> `Maybe Text' 'fromNull mkText'* #}
@@ -143,24 +142,11 @@ textTransformToGlobal text x y = do
   (x', y') <- textTransformToGlobal_ text x y
   return (realToFrac x', realToFrac y')
 
-{#fun unsafe Text_SetString as textSetString_
- {withTextPtr* `TextPtr'
- ,id `CString'} -> `()' #}
+{#fun unsafe Text_SetString as ^
+ {withText* `Text'
+ ,`String'} -> `()' #}
 
-textSetString :: Text -> String -> IO ()
-textSetString Text{textPtr, textString} newString = do
-  strPtr <- newCString newString
-  strFPtr <- newForeignPtr finalizerFree (castPtr strPtr)
-  writeIORef textString (Just strFPtr)
-  textSetString_ textPtr strPtr
+{#fun unsafe Text_SetUnicodeString as ^
+ {withText* `Text'
+ ,withUnicodeString* `String'} -> `()' #}
 
-{#fun unsafe Text_SetUnicodeString as textSetUnicodeString_
- {withTextPtr* `TextPtr'
- ,id `Ptr CUInt'} -> `()' #}
-
-textSetUnicodeString :: Text -> String -> IO ()
-textSetUnicodeString Text{textPtr, textString} newString = do
-  strPtr <- newUnicodeString newString
-  strFPtr <- newForeignPtr finalizerFree (castPtr strPtr)
-  writeIORef textString (Just strFPtr)
-  textSetUnicodeString_ textPtr strPtr

@@ -24,37 +24,19 @@ import Data.IORef
 {#context lib="csfml-graphics" prefix="sf" #}
 
 foreign import ccall unsafe "&sfFont_Destroy"
-  fontDestroy :: FinalizerPtr FontPtr
+  fontDestroy :: FinalizerPtr Font
 
-mkFont :: Ptr FontPtr -> IO Font
-mkFont ptr = do
-  fontPtr <- fmap FontPtr $ newForeignPtr fontDestroy ptr
-  fontData <- newIORef Nothing
-  return (Font fontPtr fontData)
+mkFont :: Ptr Font -> IO Font
+mkFont ptr = fmap Font $ newForeignPtr fontDestroy ptr
 
-mkConstFont :: Ptr FontPtr -> IO Font
-mkConstFont ptr = do
-  fontPtr <- fmap FontPtr $ newForeignPtr_ ptr
-  fontData <- newIORef Nothing
-  return (Font fontPtr fontData)
+mkConstFont :: Ptr Font -> IO Font
+mkConstFont ptr = fmap Font $ newForeignPtr_ ptr
 
 {#fun unsafe Font_CreateFromFile as ^
  {`String'} -> `Maybe Font' 'fromNull mkFont'* #}
 
-{#fun unsafe Font_CreateFromMemory as fontCreateFromMemory_
- {id `Ptr ()'
- ,id `CULong'} -> `Ptr FontPtr' id #}
-
-fontCreateFromMemory :: ByteString -> IO (Maybe Font)
-fontCreateFromMemory bytes = do
-  let (dataFPtr, offset, len) = BSI.toForeignPtr bytes
-  ptr <- withForeignPtr dataFPtr (\dataPtr -> fontCreateFromMemory_ (dataPtr `plusPtr` offset) (fromIntegral len))
-  if ptr == nullPtr
-    then return Nothing
-    else do
-    fontPtr <- fmap FontPtr $ newForeignPtr fontDestroy ptr
-    fontData <- newIORef (Just dataFPtr)
-    return (Just (Font fontPtr fontData))
+{#fun unsafe Font_CreateFromMemory as ^
+ {'withByteStringLen ()'* `ByteString'&} -> `Maybe Font' 'fromNull mkFont'* #}
 
 {#fun unsafe Font_Copy as ^
  {withFont* `Font'} -> `Font' mkFont* #}
@@ -82,5 +64,5 @@ toCodepoint = fromIntegral.ord
  {withFont* `Font'
  ,fromIntegral `Word'} -> `Image' mkConstImage* #}
 
-{#fun unsafe Font_GetDefaultFont as ^
+{#fun pure unsafe Font_GetDefaultFont as fontDefault
  {} -> `Font' mkConstFont* #}

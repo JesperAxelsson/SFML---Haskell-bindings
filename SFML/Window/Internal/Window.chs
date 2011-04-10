@@ -10,6 +10,7 @@ module SFML.Window.Internal.Window where
 {#import SFML.Window.Internal.VideoMode #}
 import SFML.ForeignUtils
 import Foreign.C
+import Foreign.C.String
 import Foreign.Ptr
 import Foreign.ForeignPtr
 import Foreign.Marshal.Alloc
@@ -17,6 +18,8 @@ import Foreign.Marshal.Utils
 import Foreign.Storable
 import Data.Word
 import Data.ByteString (ByteString)
+import qualified Data.ByteString.Internal as BSI
+import Data.IORef
 
 {#context lib="csfml-window" prefix="sf" #}
 
@@ -41,9 +44,7 @@ foreign import ccall unsafe "&sfWindow_Destroy"
   windowDestroy :: FinalizerPtr Window
 
 mkWindow :: Ptr Window -> IO Window
-mkWindow win = do
-  win' <- newForeignPtr windowDestroy win
-  return (Window win')
+mkWindow ptr = fmap Window $ newForeignPtr windowDestroy ptr
 
 {#fun unsafe Window_CreateWrapper as windowCreate
  {withT* `VideoMode'

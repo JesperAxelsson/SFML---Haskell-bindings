@@ -33,36 +33,20 @@ import Data.IORef
 {#context lib="csfml-graphics" prefix="sf" #}
 
 foreign import ccall unsafe "&sfRenderWindow_Destroy"
-  renderWindowDestroy :: FinalizerPtr RenderWindowPtr
+  renderWindowDestroy :: FinalizerPtr RenderWindow
 
-{#fun unsafe RenderWindow_CreateWrapper as renderWindowCreate_
+mkRenderWindow :: Ptr RenderWindow -> IO RenderWindow
+mkRenderWindow ptr = fmap RenderWindow $ newForeignPtr renderWindowDestroy ptr
+
+{#fun unsafe RenderWindow_CreateWrapper as renderWindowCreate
  {withT* `VideoMode'
- ,id `Ptr CChar'
+ ,`String'
  ,stylesToCULong `[Style]'
- ,id `ContextSettingsPtr'} -> `Ptr RenderWindowPtr' id #}
-
-renderWindowCreate :: VideoMode -> String -> [Style] -> Maybe ContextSettings -> IO RenderWindow
-renderWindowCreate videoMode title styles contextSettings = do
-  titlePtr <- newCString title
-  titleFPtr <- newForeignPtr finalizerFree titlePtr
-  contextPtr <- case contextSettings of
-    Nothing -> return nullPtr
-    Just ctx -> new ctx
-  contextFPtr <- newForeignPtr finalizerFree contextPtr
-  renderWindowPtr <- renderWindowCreate_ videoMode titlePtr styles contextPtr
-  renderWindowFPtr <- newForeignPtr renderWindowDestroy renderWindowPtr
-  titleRef <- newIORef titleFPtr
-  contextRef <- newIORef contextFPtr
-  iconRef <- newIORef Nothing
-  viewRef <- newIORef Nothing
-  return (RenderWindow (RenderWindowPtr renderWindowFPtr) titleRef contextRef iconRef viewRef)
+ ,'withMaybe withT'* `Maybe ContextSettings'} -> `RenderWindow' mkRenderWindow* #}
   
-{- TODO need to figure out how to handle memory management on this
-
 {#fun unsafe RenderWindow_CreateFromHandle as ^
  {id `WindowHandle'
  ,'withMaybe withT'* `Maybe ContextSettings'} -> `RenderWindow' mkRenderWindow* #}
--}
 
 {#fun unsafe RenderWindow_Close as ^
  {withRenderWindow* `RenderWindow'} -> `()' #}
@@ -131,17 +115,11 @@ renderWindowWaitEvent window =
  {withRenderWindow* `RenderWindow'
  ,`Bool'} -> `()' #}
 
-{#fun unsafe RenderWindow_SetIcon as renderWindowSetIcon_
- {withRenderWindowPtr* `RenderWindowPtr'
+{#fun unsafe RenderWindow_SetIcon as ^
+ {withRenderWindow* `RenderWindow'
  ,fromIntegral `Word'
  ,fromIntegral `Word'
- ,id `Ptr CUChar'} -> `()' #}
-
-renderWindowSetIcon :: RenderWindow -> Word -> Word -> ByteString -> IO ()
-renderWindowSetIcon window width height bytes = do
-  let (bytesFPtr, offset, len) = BSI.toForeignPtr bytes
-  withForeignPtr bytesFPtr $ (\ptr -> renderWindowSetIcon_ (renderWindowPtr window) width height (ptr `plusPtr` offset))
-  writeIORef (renderWindowIcon window) (Just bytesFPtr)
+ ,'withByteString (undefined :: CUChar)'* `ByteString'} -> `()' #}
 
 {#fun unsafe RenderWindow_SetActive as ^
  {withRenderWindow* `RenderWindow'
@@ -204,14 +182,9 @@ renderWindowSetIcon window width height bytes = do
  {withRenderWindow* `RenderWindow'
  ,withT* `Color'} -> `()' #}
 
-{#fun unsafe RenderWindow_SetView as renderWindowSetView_
- {withRenderWindowPtr* `RenderWindowPtr'
+{#fun unsafe RenderWindow_SetView as ^
+ {withRenderWindow* `RenderWindow'
  ,withView* `View'} -> `()' #}
-
-renderWindowSetView :: RenderWindow -> View -> IO ()
-renderWindowSetView window view = do
-  renderWindowSetView_ (renderWindowPtr window) view
-  writeIORef (renderWindowView window) (Just view)
 
 {#fun unsafe RenderWindow_GetView as ^
  {withRenderWindow* `RenderWindow'} -> `View' mkConstView* #}

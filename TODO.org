@@ -1,14 +1,14 @@
 * DONE Properly allocate unicode string
 
-* TODO Add garbage collection for Text
+* DONE Add garbage collection for Text
 
-* TODO Add garbage collection for Font
+* DONE Add garbage collection for Font
 
-* TODO Add garbage collection for Image
+* DONE Add garbage collection for Image
 
-** TODO Add pixeldata foreignptr to record
+** DONE Add pixeldata foreignptr to record
 
-* TODO Add garbage collection for Sprite
+* DONE Add garbage collection for Sprite
 
 * TODO Add rest of methods to Text
 

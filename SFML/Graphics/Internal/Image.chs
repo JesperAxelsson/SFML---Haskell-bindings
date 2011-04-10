@@ -21,17 +21,13 @@ import Data.ByteString (ByteString, packCStringLen)
 {#context lib="csfml-graphics" prefix="sf" #}
 
 foreign import ccall unsafe "&sfImage_Destroy"
-  imageDestroy :: FinalizerPtr ImagePtr
+  imageDestroy :: FinalizerPtr Image
 
-mkImage :: Ptr ImagePtr -> IO Image
-mkImage ptr = do
-  imagePtr <- fmap ImagePtr $ newForeignPtr imageDestroy ptr
-  return (Image imagePtr)
+mkImage :: Ptr Image -> IO Image
+mkImage ptr = fmap Image $ newForeignPtr imageDestroy ptr
 
-mkConstImage :: Ptr ImagePtr -> IO Image
-mkConstImage ptr = do
-  imagePtr <- fmap ImagePtr $ newForeignPtr_ ptr
-  return (Image imagePtr)
+mkConstImage :: Ptr Image -> IO Image
+mkConstImage ptr = fmap Image $ newForeignPtr_ ptr
 
 {#fun unsafe Image_CreateFromColorWrapper as imageCreateFromColor
  {fromIntegral `Word'

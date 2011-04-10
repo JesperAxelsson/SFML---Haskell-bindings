@@ -26,29 +26,15 @@ data Glyph = Glyph { glyphAdvance :: Int
                    , glyphBounds, glyphSubRect :: Rect Int
                    } deriving (Eq, Show)
 
-{#pointer *Font as FontPtr foreign newtype #}
-data Font = Font { fontPtr :: FontPtr
-                 , fontData :: IORef (Maybe (ForeignPtr Word8))
-                 }
-withFont = withFontPtr . fontPtr
+{#pointer *Font as Font foreign newtype #}
 
-{#pointer *Image as ImagePtr foreign newtype #}
-data Image = Image { imagePtr :: ImagePtr
-                   }
-withImage = withImagePtr . imagePtr
+{#pointer *Image foreign newtype #}
 
 {#pointer *Shader foreign newtype #}
 
 {#pointer *RenderImage foreign newtype #}
 
-{#pointer *RenderWindow as RenderWindowPtr foreign newtype #}
-data RenderWindow = RenderWindow { renderWindowPtr :: RenderWindowPtr
-                                 , renderWindowTitle :: IORef (ForeignPtr CChar)
-                                 , renderWindowContext :: IORef (ForeignPtr ContextSettings)
-                                 , renderWindowIcon :: IORef (Maybe (ForeignPtr Word8))
-                                 , renderWindowView :: IORef (Maybe View)
-                                 }
-withRenderWindow = withRenderWindowPtr . renderWindowPtr
+{#pointer *RenderWindow foreign newtype #}
 
 {#pointer *Shape foreign newtype #}
 
@@ -60,7 +46,6 @@ withSprite = withSpritePtr . spritePtr
 
 {#pointer *Text as TextPtr foreign newtype #}
 data Text = Text { textPtr :: TextPtr
-                 , textString :: IORef (Maybe (ForeignPtr ()))
                  , textFont :: IORef (Maybe Font)}
 withText = withTextPtr . textPtr
 

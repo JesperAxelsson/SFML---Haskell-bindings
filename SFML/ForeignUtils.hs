@@ -41,11 +41,11 @@ fromNull conv ptr | ptr == nullPtr = return Nothing
                   | otherwise = fmap Just $ conv ptr
 
 
-newUnicodeString :: String -> IO (Ptr CUInt)
-newUnicodeString str = do
-  arr <- mallocArray len
+withUnicodeString :: String -> (Ptr CUInt -> IO a) -> IO a
+withUnicodeString str act= do
+  allocaArray len $ \arr -> do
   pokeElemOff arr (len - 1) 0
   forM_ (zip str [0..]) $ \(char, i) -> do
     pokeElemOff arr i (fromIntegral . ord $ char)
-  return arr
+  act arr
  where len = length str + 1
