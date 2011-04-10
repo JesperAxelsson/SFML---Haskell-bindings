@@ -75,6 +75,7 @@ Library
                      , cbits/TextWrapper.c 
                      , cbits/VideoModeWrapper.c 
                      , cbits/WindowWrapper.c
+                     , cbits/ViewWrapper.c
 
   Include-dirs:        cbits
 
@@ -89,6 +90,7 @@ Library
                      , TextWrapper.c 
                      , VideoModeWrapper.c 
                      , WindowWrapper.c
+                     , ViewWrapper.c
 
   Extra-libraries:     csfml-graphics, csfml-window, csfml-system
   
