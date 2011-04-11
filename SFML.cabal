@@ -52,6 +52,8 @@ Library
                      , SFML.Graphics.Internal.Shader
                      , SFML.Graphics.Internal.Shape
 
+                     , SFML.Audio.Internal.Types
+                     , SFML.Audio.Internal.Music
                      
 
   if flag(dev)
@@ -92,9 +94,8 @@ Library
                      , WindowWrapper.c
                      , ViewWrapper.c
 
-  Extra-libraries:     csfml-graphics, csfml-window, csfml-system
+  Extra-libraries:   csfml-audio, csfml-graphics, csfml-window, csfml-system
   
-  -- Extra tools (e.g. alex, hsc2hs, ...) needed to build the source.
   Build-tools:         c2hs
 
 Executable hacking-sfml
