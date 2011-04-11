@@ -2,6 +2,7 @@ module SFML.ForeignUtils where
 
 import Foreign
 import Foreign.C
+import Foreign.Storable
 import Control.Monad
 import Data.Char
 import Data.ByteString (ByteString)
@@ -29,10 +30,16 @@ withByteString _ bytes m =
       m (plusPtr (castPtr bytesPtr) offset)
 
 withByteStringLen :: a -> ByteString -> ((Ptr a, CULong) -> IO b) -> IO b
-withByteStringLen _ bytes m =
+withByteStringLen typeWit bytes m =
   let (bytesFPtr, offset, len) = BSI.toForeignPtr bytes
   in withForeignPtr bytesFPtr $ \bytesPtr ->
       m (castPtr (plusPtr bytesPtr offset), fromIntegral len)
+      
+withByteStringLenSizeOf :: (Storable a) => a -> ByteString -> ((Ptr a, CULong) -> IO b) -> IO b
+withByteStringLenSizeOf typeWit bytes m =
+  let (bytesFPtr, offset, len) = BSI.toForeignPtr bytes
+  in withForeignPtr bytesFPtr $ \bytesPtr ->
+      m (castPtr (plusPtr bytesPtr offset), fromIntegral (len `div` sizeOf typeWit))
 
 withMaybe :: (a -> (Ptr a -> IO b) -> IO b) -> Maybe a -> (Ptr a -> IO b) -> IO b
 withMaybe withFoo Nothing act = act nullPtr

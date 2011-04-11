@@ -14,8 +14,10 @@
 
 * DONE Check for copy constructors in garbage collected types
 
-* TODO Add View methods
+* DONE Add View methods
 
 * DONE Add garbage collection for RenderWindow
 
 ** DONE Figure out how to handle memory management for CreateFromHandle
+
+* TODO Ensure foreign pointers don't go out of scope too early when doing post-processing of calls
