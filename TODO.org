@@ -1,3 +1,5 @@
+#+TODO: TODO PUNTED | DONE
+
 * DONE Properly allocate unicode string
 
 * DONE Add garbage collection for Text
@@ -21,3 +23,5 @@
 ** DONE Figure out how to handle memory management for CreateFromHandle
 
 * TODO Ensure foreign pointers don't go out of scope too early when doing post-processing of calls
+
+* PUNTED SoundRecorder. It's troublesome because of threading and freeing of callbacks. Also, Y NO FOREIGNFUNPTR??

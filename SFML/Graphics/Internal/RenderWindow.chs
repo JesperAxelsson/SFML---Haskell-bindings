@@ -64,11 +64,11 @@ mkRenderWindow ptr = fmap RenderWindow $ newForeignPtr renderWindowDestroy ptr
  {withRenderWindow* `RenderWindow'
  ,alloca- `ContextSettings' peek*} -> `()' #}
 
-renderWindowGetEvent :: RenderWindow -> IO (Maybe Event)
-renderWindowGetEvent window =
+renderWindowPollEvent :: RenderWindow -> IO (Maybe Event)
+renderWindowPollEvent window =
   withRenderWindow window $ \winPtr ->
   alloca $ \evtPtr ->
-  {#call unsafe RenderWindow_GetEvent#} winPtr evtPtr >>= \b ->
+  {#call unsafe RenderWindow_PollEvent#} winPtr evtPtr >>= \b ->
   if toBool b then do
     evt <- peek evtPtr
     return (Just evt)

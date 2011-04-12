@@ -67,11 +67,11 @@ mkWindow ptr = fmap Window $ newForeignPtr windowDestroy ptr
 {#fun unsafe Window_GetSettingsWrapper as windowGetSettings
  {withWindow* `Window', alloca- `ContextSettings' peek*} -> `()' #}
 
-windowGetEvent :: Window -> IO (Maybe Event)
-windowGetEvent window =
+windowPollEvent :: Window -> IO (Maybe Event)
+windowPollEvent window =
   withWindow window $ \w ->
   alloca $ \evtPtr ->
-  {#call unsafe Window_GetEvent#} w evtPtr >>= \b ->
+  {#call unsafe Window_PollEvent#} w evtPtr >>= \b ->
   if toBool b then do
     evt <- peek evtPtr
     return (Just evt)

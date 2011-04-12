@@ -6,6 +6,8 @@ module SFML.Audio.Internal.Types where
 #include <SFML/Audio/SoundStatus.h>
 
 import Foreign.ForeignPtr
+import Foreign.Ptr
+import Foreign.C
 import Data.IORef
 
 {#context lib="csfml-audio" prefix="sf" #}
@@ -21,8 +23,6 @@ withSound = withSoundPtr . soundPtr
 {#pointer *SoundBuffer foreign newtype #}
 
 {#pointer *SoundBufferRecorder foreign newtype #}
-
-{#pointer *SoundRecorder foreign newtype #}
 
 {#pointer *SoundStream foreign newtype #}
 
