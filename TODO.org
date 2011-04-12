@@ -1,4 +1,4 @@
-#+TODO: TODO PUNTED | DONE
+#+TODO: TODO SFMLBUG | DONE
 
 * DONE Properly allocate unicode string
 
@@ -24,4 +24,10 @@
 
 * TODO Ensure foreign pointers don't go out of scope too early when doing post-processing of calls
 
-* PUNTED SoundRecorder. It's troublesome because of threading and freeing of callbacks. Also, Y NO FOREIGNFUNPTR??
+* SFMLBUG Bind SoundRecorder. Need to be able to spawn own thread rather than have SFML do it secretly. This confuses the GC
+
+** See https://github.com/LaurentGomila/SFML/issues/28
+
+* SFMLBUG Fix Music so the GC doesn't collect it until it's done playing.
+
+** See https://github.com/LaurentGomila/SFML/issues/28
