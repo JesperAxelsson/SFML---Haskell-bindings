@@ -8,6 +8,7 @@ import SFML.Window.Internal.Types
 import SFML.Window.Internal.VideoMode
 import SFML.Window.Internal.Event
 import SFML.System.Internal.Clock
+import SFML.Audio.Internal.Music
 import Control.Monad
 
 withMaybe :: Monad m => Maybe a -> (a -> m b) -> m ()
@@ -23,6 +24,10 @@ main = do
   textSetFont text fontDefault
   textSetString text "Hello"
   textSetCharacterSize text 50
+  
+  Just music <- musicCreateFromFile "Music.ogg"
+  musicPlay music
+  
   run window sprite text
   
 run window sprite text = do
@@ -37,7 +42,7 @@ run window sprite text = do
   
  where
    handleEvents window sprite = do
-     event <- renderWindowGetEvent window
+     event <- renderWindowPollEvent window
      withMaybe event $ \evt ->do
        case evt of
          Closed -> renderWindowClose window
