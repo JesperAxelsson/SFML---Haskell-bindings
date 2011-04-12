@@ -26,10 +26,10 @@ mkMusic :: Ptr Music -> IO Music
 mkMusic ptr = fmap Music $ newForeignPtr musicDestroy ptr
 
 {#fun unsafe Music_CreateFromFile as ^
- {`String'} -> `Music' mkMusic* #}
+ {`String'} -> `Maybe Music' 'fromNull mkMusic'* #}
 
 {#fun unsafe Music_CreateFromMemory as ^
- {'withByteStringLen ()'* `ByteString'&} -> `Music' mkMusic* #}
+ {'withByteStringLen ()'* `ByteString'&} -> `Maybe Music' 'fromNull mkMusic'* #}
 
 {#fun unsafe Music_SetLoop as ^
  {withMusic* `Music'
