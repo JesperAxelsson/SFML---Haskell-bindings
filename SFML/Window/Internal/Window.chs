@@ -124,7 +124,7 @@ windowWaitEvent window =
  {withWindow* `Window'
  ,`Bool'} -> `Bool' #}
 
-{#fun unsafe Window_Display as ^
+{#fun Window_Display as ^
  {withWindow* `Window'} -> `()' #}
 
 {#fun unsafe Window_GetInput as ^

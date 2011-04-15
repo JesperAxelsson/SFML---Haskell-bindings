@@ -135,7 +135,7 @@ renderWindowWaitEvent window =
 {#fun unsafe RenderWindow_RestoreGLStates as ^
  {withRenderWindow* `RenderWindow'} -> `()' #}
 
-{#fun unsafe RenderWindow_Display as ^
+{#fun RenderWindow_Display as ^
  {withRenderWindow* `RenderWindow'} -> `()' #}
 
 {#fun unsafe RenderWindow_GetInput as ^

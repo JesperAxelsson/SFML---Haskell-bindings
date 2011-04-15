@@ -108,6 +108,7 @@ Executable hacking-sfml
   else
     Buildable:         False
 
+  Ghc-options:         -threaded
 
   Main-is:             Hacking.hs
 
