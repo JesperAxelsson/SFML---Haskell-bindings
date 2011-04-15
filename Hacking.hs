@@ -17,6 +17,8 @@ withMaybe (Just x) m = m x >> return ()
 
 main = do
   window <- renderWindowCreate (VideoMode 800 600 32) "SFML window" [] Nothing
+  renderWindowEnableVerticalSync window True
+--  renderWindowSetFramerateLimit window 5
   Just image <- imageCreateFromFile "test.png"
   Just sprite <- spriteCreate
   spriteSetImage sprite image True
@@ -26,22 +28,23 @@ main = do
   textSetCharacterSize text 50
   
   Just music <- musicCreateFromFile "Music.ogg"
-  musicPlay music
+--  musicPlay music
   
-  run window sprite text
+  run window sprite text music
+  putStrLn "Main exiting"
   
-run window sprite text = do
+run window sprite text music = do
   isOpen <- renderWindowIsOpened window
   when isOpen $ do
-    handleEvents window sprite
+    handleEvents window sprite music
     renderWindowClear window colorBlack
     renderWindowDrawSprite window sprite
     renderWindowDrawText window text
     renderWindowDisplay window
-    run window sprite text
+    run window sprite text music
   
  where
-   handleEvents window sprite = do
+   handleEvents window sprite music = do
      event <- renderWindowPollEvent window
      withMaybe event $ \evt ->do
        case evt of
@@ -51,7 +54,9 @@ run window sprite text = do
          (KeyPressed KeyRight _ _ _) -> spriteMove sprite 5 0
          (KeyPressed KeyUp _ _ _) -> spriteMove sprite 0 (-5)
          (KeyPressed KeyDown _ _ _) -> spriteMove sprite 0 5
+         (KeyPressed KeyP _ _ _) -> musicPlay music
+         (KeyPressed KeyS _ _ _) -> musicStop music
          (KeyPressed key _ _ _) -> putStrLn ("Pressed " ++ show key)
          _ -> return ()
-       handleEvents window sprite
+       handleEvents window sprite music
 

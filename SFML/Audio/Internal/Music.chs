@@ -16,7 +16,6 @@ import Foreign.Marshal.Utils
 import Data.ByteString (ByteString)
 import Data.Word
 
-
 {#context lib="csfml-audio" prefix="sf" #}
 
 foreign import ccall unsafe "&sfMusic_Destroy"
@@ -41,8 +40,13 @@ mkMusic ptr = fmap Music $ newForeignPtr musicDestroy ptr
 {#fun unsafe Music_GetDuration as ^
  {withMusic* `Music'} -> `Float' #}
 
-{#fun unsafe Music_Play as ^
+{#fun unsafe Music_Play as musicPlay_
  {withMusic* `Music'} -> `()' #}
+
+musicPlay :: Music -> IO ()
+musicPlay music = do
+  musicPlay_ music
+  waitFor (fmap (/=Playing) (musicGetStatus music))
 
 {#fun unsafe Music_Pause as ^
  {withMusic* `Music'} -> `()' #}

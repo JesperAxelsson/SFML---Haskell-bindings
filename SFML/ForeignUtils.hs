@@ -4,6 +4,8 @@ import Foreign
 import Foreign.C
 import Foreign.Storable
 import Control.Monad
+import Control.Applicative
+import Control.Concurrent
 import Data.Char
 import Data.ByteString (ByteString)
 import qualified Data.ByteString.Internal as BSI
@@ -74,3 +76,11 @@ enumsToCULong styles = foldl' ((. fromIntegral . fromEnum) . (.|.)) 0 styles
 
 cuLongToEnums :: (Enum a) => CULong -> [a]
 cuLongToEnums x = map (toEnum . fromIntegral) . filter (/=0) . map ((x .&.) . shiftL 1) $ [0.. (bitSize x) - 1]
+
+waitFor :: IO Bool -> IO ()
+waitFor isDone = ()<$ forkIO wait
+  where wait = do
+          done <- isDone
+          if done
+            then putStrLn "Music done playing"
+            else putStrLn "Music not done" >> threadDelay 100000 >> wait
