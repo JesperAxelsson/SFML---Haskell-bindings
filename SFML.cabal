@@ -57,7 +57,8 @@ Library
                      , SFML.Audio.Internal.Music
                      , SFML.Audio.Internal.Sound
                      , SFML.Audio.Internal.SoundBuffer
-                     , SFML.Audio.Internal.SoundBufferRecorder
+--                     , SFML.Audio.Internal.SoundBufferRecorder
+                     , SFML.Audio.Internal.SoundStream
                      
 
   if flag(dev)

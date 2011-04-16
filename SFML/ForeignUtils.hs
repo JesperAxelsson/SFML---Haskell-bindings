@@ -82,5 +82,5 @@ waitFor isDone = ()<$ forkIO wait
   where wait = do
           done <- isDone
           if done
-            then putStrLn "Music done playing"
-            else putStrLn "Music not done" >> threadDelay 100000 >> wait
+            then return ()
+            else threadDelay 100000 >> wait

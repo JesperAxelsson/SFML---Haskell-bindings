@@ -1,4 +1,4 @@
-#+TODO: TODO SFMLBUG | DONE
+#+TODO: TODO DEFERED | DONE
 
 * DONE Properly allocate unicode string
 
@@ -24,10 +24,19 @@
 
 * TODO Ensure foreign pointers don't go out of scope too early when doing post-processing of calls
 
-* SFMLBUG Bind SoundRecorder. Need to be able to spawn own thread rather than have SFML do it secretly. This confuses the GC
+* DONE Fix Music so the GC doesn't collect it until it's done playing.
 
-** See https://github.com/LaurentGomila/SFML/issues/28
+* DONE Add SoundStream
 
-* SFMLBUG Fix Music so the GC doesn't collect it until it's done playing.
+* TODO Check for unsafe calls that should really be safe
 
-** See https://github.com/LaurentGomila/SFML/issues/28
+* TODO Give KeyCode enum a default for unknown codes
+* DEFERED Fix SoundBufferRecorder so it isn't collected while it's still recording
+
+** Need to be able to see if the recorder is still recording. This isn't currently possible. This part of the API is left out for now
+
+* DEFERED Bind SoundRecorder
+
+** Need to be able to see if the recorder is still recording. This isn't currently possible.
+
+   

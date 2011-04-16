@@ -11,6 +11,9 @@ import SFML.System.Internal.Clock
 import SFML.Audio.Internal.Music
 import Control.Monad
 
+import Foreign.ForeignPtr
+import SFML.Graphics.Internal.Types
+
 withMaybe :: Monad m => Maybe a -> (a -> m b) -> m ()
 withMaybe Nothing _ = return ()
 withMaybe (Just x) m = m x >> return ()
@@ -18,7 +21,7 @@ withMaybe (Just x) m = m x >> return ()
 main = do
   window <- renderWindowCreate (VideoMode 800 600 32) "SFML window" [] Nothing
   renderWindowEnableVerticalSync window True
---  renderWindowSetFramerateLimit window 5
+  renderWindowSetFramerateLimit window 5
   Just image <- imageCreateFromFile "test.png"
   Just sprite <- spriteCreate
   spriteSetImage sprite image True
@@ -28,7 +31,7 @@ main = do
   textSetCharacterSize text 50
   
   Just music <- musicCreateFromFile "Music.ogg"
---  musicPlay music
+  musicPlay music
   
   run window sprite text music
   putStrLn "Main exiting"

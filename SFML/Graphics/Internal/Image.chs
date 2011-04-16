@@ -20,7 +20,7 @@ import Data.ByteString (ByteString, packCStringLen)
 
 {#context lib="csfml-graphics" prefix="sf" #}
 
-foreign import ccall unsafe "&sfImage_Destroy"
+foreign import ccall "&sfImage_Destroy"
   imageDestroy :: FinalizerPtr Image
 
 mkImage :: Ptr Image -> IO Image
